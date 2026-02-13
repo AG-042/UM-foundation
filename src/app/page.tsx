@@ -373,7 +373,7 @@ export default function Home() {
                 variants={fadeInUp}
               >
                 <div className="text-center">
-                  <div className="text-3xl font-bold text-[#1E56A0]">1000+</div>
+                  <div className="text-3xl font-bold text-[#1E56A0]">5000+</div>
                   <div className="text-sm text-gray-600">Children Helped</div>
                 </div>
                 <div className="text-center">
