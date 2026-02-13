@@ -23,7 +23,7 @@ import {
 
 const images = {
   hero: "/084d74f8-254d-46e1-87a6-a292c368f54a.JPG",
-  logo: "/941e6023-6f8b-4863-9981-6502b977de34.JPG",
+  logo: "/UM-logo.png",
   gallery: [
     "/ce3f11ad-9468-40d5-9ce3-78f9af15e5da.JPG",
     "/fef4c58c-d5f3-45cd-97be-72a4ca2ce115.JPG",
@@ -80,6 +80,48 @@ const scaleIn = {
 export default function Home() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeVideo, setActiveVideo] = useState<string | null>(null);
+  const [contactForm, setContactForm] = useState({
+    name: '',
+    email: '',
+    subject: '',
+    message: ''
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState<{ type: 'success' | 'error', message: string } | null>(null);
+
+  const handleContactSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    setSubmitStatus(null);
+
+    try {
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(contactForm),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setSubmitStatus({ type: 'success', message: data.message });
+        // Open mailto link
+        if (data.mailtoLink) {
+          window.location.href = data.mailtoLink;
+        }
+        // Reset form
+        setContactForm({ name: '', email: '', subject: '', message: '' });
+      } else {
+        setSubmitStatus({ type: 'error', message: data.error || 'Failed to send message' });
+      }
+    } catch (error) {
+      setSubmitStatus({ type: 'error', message: 'Failed to send message. Please try again.' });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-white">
@@ -88,12 +130,12 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16 md:h-20">
             <div className="flex items-center gap-3">
-              <div className="relative w-12 h-12 md:w-14 md:h-14 rounded-full overflow-hidden">
+              <div className="relative w-12 h-12 md:w-14 md:h-14">
                 <Image
                   src={images.logo}
                   alt="Uche & Mmesoma Foundation Logo"
                   fill
-                  className="object-cover object-[85%_5%] scale-[2.5]"
+                  className="object-contain"
                   priority
                 />
               </div>
@@ -188,7 +230,7 @@ export default function Home() {
             >
               Making sure no child is denied the opportunity to acquire good education. 
               We provide school supplies, backpacks, and educational resources to 
-              children in need across Nigeria and the USA.
+              children in need across Nigeria and potentially other African countries.
             </motion.p>
             <motion.div 
               className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto"
@@ -242,8 +284,8 @@ export default function Home() {
             <div className="w-24 h-1 bg-[#F5A623] mx-auto mb-6" />
             <p className="text-lg text-gray-600 max-w-3xl mx-auto">
               The Uche & Mmesoma Foundation is dedicated to transforming lives through 
-              education. With offices in both Nigeria and the USA, we bridge communities 
-              and create opportunities for children to thrive.
+              education. With offices in Nigeria, we bridge communities 
+              and create opportunities for children to thrive, with possible expansions to other African countries.
             </p>
           </motion.div>
 
@@ -323,7 +365,7 @@ export default function Home() {
               >
                 Our dedicated team of volunteers works tirelessly to distribute school 
                 supplies, organize educational events, and create lasting change in 
-                communities across Nigeria and Texas, USA.
+                communities across Nigeria and potentially other African countries.
               </motion.p>
 
               <motion.div 
@@ -557,7 +599,7 @@ export default function Home() {
             viewport={{ once: true, amount: 0.3 }}
             variants={staggerContainer}
           >
-            {/* USA Account */}
+            {/* America Account */}
             <motion.div variants={scaleIn} transition={{ duration: 0.5 }}>
             <Card className="bg-white/10 backdrop-blur-sm border-white/20 h-full">
               <CardContent className="p-8">
@@ -566,8 +608,8 @@ export default function Home() {
                     <CreditCard className="text-white" size={24} />
                   </div>
                   <div>
-                    <h3 className="text-xl font-bold text-white">USA Bank Account</h3>
-                    <p className="text-blue-200 text-sm">For donations from the United States</p>
+                    <h3 className="text-xl font-bold text-white">America Bank Account</h3>
+                    <p className="text-blue-200 text-sm">For donations from America</p>
                   </div>
                 </div>
 
@@ -585,7 +627,7 @@ export default function Home() {
                   <div>
                     <p className="text-blue-200 text-sm mb-1">Bank Name</p>
                     <p className="text-white font-semibold">UNIVERSITY FEDERAL CREDIT UNION</p>
-                    <p className="text-blue-200 text-sm">Austin, Texas, USA</p>
+                    <p className="text-blue-200 text-sm">Austin, Texas, America</p>
                   </div>
                 </div>
               </CardContent>
@@ -679,7 +721,7 @@ export default function Home() {
             viewport={{ once: true, amount: 0.3 }}
             variants={staggerContainer}
           >
-            {/* USA Office */}
+            {/* America Office */}
             <motion.div variants={scaleIn} transition={{ duration: 0.5 }}>
             <Card className="hover:shadow-xl transition-shadow duration-300 h-full">
               <CardContent className="p-8">
@@ -688,7 +730,7 @@ export default function Home() {
                     <MapPin className="text-[#1E56A0]" size={28} />
                   </div>
                   <div>
-                    <h3 className="text-xl font-bold text-gray-900">USA Office</h3>
+                    <h3 className="text-xl font-bold text-gray-900">America Office</h3>
                     <p className="text-gray-500 text-sm">Austin, Texas</p>
                   </div>
                 </div>
@@ -700,7 +742,7 @@ export default function Home() {
                       <p className="text-gray-900 font-medium">Address</p>
                       <p className="text-gray-600">
                         11217 Kirkland Hill Path<br />
-                        Austin, Texas 78754, USA
+                        Austin, Texas 78754, America
                       </p>
                     </div>
                   </div>
@@ -772,34 +814,55 @@ export default function Home() {
                 <h3 className="text-xl font-bold text-gray-900 mb-6 text-center">
                   Send Us a Message
                 </h3>
-                <div className="space-y-4">
+                <form onSubmit={handleContactSubmit} className="space-y-4">
                   <div className="grid md:grid-cols-2 gap-4">
                     <input
                       type="text"
                       placeholder="Your Name"
+                      value={contactForm.name}
+                      onChange={(e) => setContactForm({ ...contactForm, name: e.target.value })}
+                      required
                       className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1E56A0] focus:border-transparent"
                     />
                     <input
                       type="email"
                       placeholder="Your Email"
+                      value={contactForm.email}
+                      onChange={(e) => setContactForm({ ...contactForm, email: e.target.value })}
+                      required
                       className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1E56A0] focus:border-transparent"
                     />
                   </div>
                   <input
                     type="text"
                     placeholder="Subject"
+                    value={contactForm.subject}
+                    onChange={(e) => setContactForm({ ...contactForm, subject: e.target.value })}
+                    required
                     className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1E56A0] focus:border-transparent"
                   />
                   <textarea
                     placeholder="Your Message"
                     rows={5}
+                    value={contactForm.message}
+                    onChange={(e) => setContactForm({ ...contactForm, message: e.target.value })}
+                    required
                     className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1E56A0] focus:border-transparent resize-none"
                   />
-                  <Button className="w-full bg-[#1E56A0] hover:bg-[#164785] text-white font-semibold py-6">
+                  {submitStatus && (
+                    <div className={`p-4 rounded-lg ${submitStatus.type === 'success' ? 'bg-green-50 text-green-800' : 'bg-red-50 text-red-800'}`}>
+                      {submitStatus.message}
+                    </div>
+                  )}
+                  <Button 
+                    type="submit" 
+                    disabled={isSubmitting}
+                    className="w-full bg-[#1E56A0] hover:bg-[#164785] text-white font-semibold py-6 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
                     <Mail className="mr-2" size={18} />
-                    Send Message
+                    {isSubmitting ? 'Sending...' : 'Send Message'}
                   </Button>
-                </div>
+                </form>
               </CardContent>
             </Card>
           </motion.div>
@@ -812,12 +875,12 @@ export default function Home() {
           <div className="grid md:grid-cols-4 gap-12">
             <div className="md:col-span-2">
               <div className="flex items-center gap-3 mb-6">
-                <div className="relative w-12 h-12 rounded-full overflow-hidden">
+                <div className="relative w-12 h-12">
                   <Image
                     src={images.logo}
                     alt="Uche & Mmesoma Foundation Logo"
                     fill
-                    className="object-cover object-[85%_5%] scale-[2.5]"
+                    className="object-contain"
                   />
                 </div>
                 <div>
@@ -847,7 +910,7 @@ export default function Home() {
               <h4 className="font-bold text-lg mb-4">Our Locations</h4>
               <div className="space-y-4">
                 <div>
-                  <p className="text-[#F5A623] font-medium mb-1">USA</p>
+                  <p className="text-[#F5A623] font-medium mb-1">America</p>
                   <p className="text-gray-400 text-sm">Austin, Texas</p>
                 </div>
                 <div>
